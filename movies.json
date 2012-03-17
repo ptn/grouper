@@ -1,0 +1,39 @@
+{  
+  "Movie 1": 
+    {
+      "user1": 10,
+      "user2": 3,
+      "user3": 8
+    }
+    ,
+  "Movie 2": 
+    {
+      "user1": 4,
+      "user2": 6,
+      "user3": 6
+    },
+  "Movie 3": 
+    {
+      "user1": 4,
+      "user2": 5,
+      "user3": 6
+    },
+  "Movie 4":
+    {
+      "user1": 9,
+      "user2": 2.5,
+      "user3": 8.5
+    },
+  "Movie 5":
+    {
+      "user1": 7.5,
+      "user2": 2,
+      "user3": 7
+    },
+  "Movie 6":
+    {
+      "user1": 9.5,
+      "user2": 8,
+      "user3": 3
+    }
+}

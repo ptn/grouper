@@ -5,7 +5,7 @@ Cluster = Struct.new :rankings, :left_cluster, :right_cluster,
 class Cluster
   def to_s(indent=0)
     if name.nil?
-      s = "+\n"
+      s = "\n"
       s += right_cluster.to_s(indent + 1) if right_cluster
       s += "\n"
       s += left_cluster.to_s(indent + 1) if left_cluster
@@ -14,7 +14,7 @@ class Cluster
     else
       s = name
     end
-    ("  " * indent) + s
+    ("  " * indent) + "(#{indent.to_s})" + s
   end
 end
 

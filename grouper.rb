@@ -74,17 +74,6 @@ class HierarchicalGrouper
     @clusters ||= build_clusters
   end
 
-  def print_tree
-    clusters.each do |cluster|
-      if cluster.name
-        #leaf
-        puts cluster.name
-      else
-        #branch
-      end
-    end
-  end
-
   private
 
   def parse_data(json)

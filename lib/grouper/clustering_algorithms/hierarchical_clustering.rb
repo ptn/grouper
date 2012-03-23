@@ -52,7 +52,7 @@ module Grouper
           commons = cluster1.rankings.commons(cluster2.rankings)
           common_rankings1 = commons.map { |k, v| v[0] }
           common_rankings2 = commons.map { |k, v| v[1] }
-          score = @algorithm.similarity_score(common_rankings1, common_rankings2)
+          score = @algorithm.distance(common_rankings1, common_rankings2)
           @distances[[cluster1, cluster2]] = score
         end
 

@@ -2,7 +2,7 @@ module Grouper
   module DistanceAlgorithms
 
     class PearsonCorrelation
-      def similarity_score(list1, list2)
+      def distance(list1, list2)
         sum1 = sum(list1)
         sum2 = sum(list2)
 

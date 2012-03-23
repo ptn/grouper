@@ -1,4 +1,22 @@
 require 'json'
+require 'delegate'
+
+class Rankings < DelegateClass(Hash)
+  def initialize(hsh=nil)
+    super(hsh)
+  end
+
+  def commons(other)
+    commons_hash = {}
+
+    common_keys = self.keys & other.keys
+    common_keys.each do |k|
+      commons_hash[k] = [self[k], other[k]]
+    end
+
+    commons_hash
+  end
+end
 
 Cluster = Struct.new :rankings, :left_cluster, :right_cluster,
   :children_distance, :name
@@ -61,12 +79,7 @@ end
 
 class HierarchicalGrouper
   def initialize(data, algorithm=PearsonCorrelation.new)
-    data = parse_data(data)
-    @names = data.keys
-    @columns = data.first[1].keys
-    @values = []
-    data.each { |k, v| @values << v.values }
-
+    @data = parse_data(data)
     @algorithm = algorithm
   end
 
@@ -101,16 +114,23 @@ class HierarchicalGrouper
 
   def distance(cluster1, cluster2)
     @distances ||= {}
-    @distances[[cluster1, cluster2]] ||=
-      @algorithm.similarity_score(cluster1.rankings, cluster2.rankings)
+    unless @distances[[cluster1, cluster2]]
+      commons = cluster1.rankings.commons(cluster2.rankings)
+      common_rankings1 = commons.map { |k, v| v[0] }
+      common_rankings2 = commons.map { |k, v| v[1] }
+      score = @algorithm.similarity_score(common_rankings1, common_rankings2)
+      @distances[[cluster1, cluster2]] = score
+    end
+
+    @distances[[cluster1, cluster2]]
   end
 
   def build_initial_clusters
     clusters = []
-    @values.each.with_index do |rankings, index|
+    @data.each do |name, rankings|
       new_cluster = Cluster.new
-      new_cluster.rankings = rankings
-      new_cluster.name = @names[index]
+      new_cluster.rankings = Rankings.new(rankings)
+      new_cluster.name = name
       clusters << new_cluster
     end
 
@@ -138,14 +158,12 @@ class HierarchicalGrouper
   end
 
   def average_rankings(cluster1, cluster2)
-    avg = []
+    avg = {}
 
-    enum1 = cluster1.rankings.each
-    enum2 = cluster2.rankings.each
-    loop do
-      avg << (enum1.next + enum2.next) / 2.0
+    cluster1.rankings.each do |k, v|
+      avg[k] = (v + cluster2.rankings[k].to_f) / 2.0
     end
 
-    avg
+    Rankings.new(avg)
   end
 end

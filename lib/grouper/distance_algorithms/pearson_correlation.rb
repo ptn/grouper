@@ -9,14 +9,14 @@ module Grouper
         sum_squares_1 = sum_squares(list1)
         sum_squares_2 = sum_squares(list2)
 
-        sum_products = sum_products(list1, list2)
-
         denominator = Math.sqrt(
-          (sum_squares_1 - sum1**2 / list1.length) *
-          (sum_squares_2 - sum2**2 / list1.length)
+          (sum_squares_1 - sum1**2 / list1.length.to_f) *
+          (sum_squares_2 - sum2**2 / list1.length.to_f)
         )
-        return 0 if denominator == 0
 
+        return 1.0 if denominator == 0
+
+        sum_products = sum_products(list1, list2)
         numerator = sum_products(list1, list2) - (sum1 * sum2/list1.length)
         1.0 - numerator / denominator
       end

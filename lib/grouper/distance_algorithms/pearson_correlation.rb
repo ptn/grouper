@@ -3,6 +3,10 @@ module Grouper
 
     class PearsonCorrelation
       def distance(list1, list2)
+        1.0 - correlation(list1, list2)
+      end
+
+      def correlation(list1, list2)
         sum1 = sum(list1)
         sum2 = sum(list2)
 
@@ -14,11 +18,11 @@ module Grouper
           (sum_squares_2 - sum2**2 / list1.length.to_f)
         )
 
-        return 1.0 if denominator == 0
+        return 0.0 if denominator == 0
 
         sum_products = sum_products(list1, list2)
         numerator = sum_products(list1, list2) - (sum1 * sum2/list1.length)
-        1.0 - numerator / denominator
+        numerator / denominator
       end
 
       private

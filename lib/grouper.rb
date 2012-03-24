@@ -10,5 +10,9 @@ module Grouper
     def clusters
       @algorithm.clusters
     end
+
+    def distances
+      @algorithm.distances
+    end
   end
 end

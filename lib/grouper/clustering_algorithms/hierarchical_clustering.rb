@@ -21,6 +21,19 @@ module Grouper
         @clusters ||= build_clusters
       end
 
+      def distances
+        distances = {}
+        clusters = build_initial_clusters
+
+        clusters.each.with_index do |cluster1, index1|
+          clusters[(index1 + 1)..-1].each.with_index do |cluster2, index2|
+            distances[[cluster1.name, cluster2.name]] = distance(cluster1, cluster2)
+          end
+        end
+
+        distances
+      end
+
       private
 
       def parse_data(json)

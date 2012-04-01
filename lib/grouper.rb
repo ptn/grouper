@@ -1,4 +1,4 @@
-require_relative 'grouper/clustering_algorithms/hierarchical_clustering'
+require_relative 'grouper/algorithms/clustering/hierarchical_clustering'
 
 module Grouper
   class Grouper

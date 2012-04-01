@@ -1,8 +1,8 @@
 require 'json'
 
-require_relative '../distance_algorithms/pearson_correlation'
-require_relative 'rankings'
-require_relative 'cluster'
+require_relative '../../algorithms/distance/pearson_correlation'
+require_relative '../../rankings'
+require_relative '../../cluster'
 
 module Grouper
   module ClusteringAlgorithms

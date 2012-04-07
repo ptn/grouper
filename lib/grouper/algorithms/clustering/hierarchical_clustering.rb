@@ -17,8 +17,14 @@ module Grouper
         @data = parse_data(data)
       end
 
-      def clusters
+      # TODO Add docs with examples
+      def cluster_tree
+        @cluster_tree ||= build_cluster_tree
+      end
+
+      def clusters(affinity=nil)
         @clusters ||= build_clusters
+        affinity ? @clusters[affinity] : @clusters
       end
 
       def distances
@@ -42,7 +48,7 @@ module Grouper
         raise WrongInputFormat, "Wrong Data format: #{ex.message}" 
       end
 
-      def build_clusters
+      def build_cluster_tree
         clusters = build_initial_clusters
 
         while clusters.length > 1 do
@@ -113,7 +119,60 @@ module Grouper
 
         Rankings.new(avg)
       end
-    end
 
+      def build_clusters
+        @clusters = []
+        max_level = -1
+
+        while max_level != 0
+          clusters, max_depth = build_clusters_up_to_level(max_level)
+          @clusters << clusters
+          max_level = max_depth - 1
+        end
+
+        @clusters << [cluster_tree.all_names]
+      end
+
+
+      def build_clusters_up_to_level(max_level=-1, level=0,
+                                     cluster=cluster_tree)
+        current_clusters = []
+        max_depth = level
+
+        if max_level == -1 || level < max_level
+          if cluster.leaf?
+            current_clusters << cluster.all_names
+          else
+            # Recurse down to children.
+            if cluster.right_cluster
+              children_clusters, child_max_depth = build_clusters_up_to_level(
+                                                     max_level,
+                                                     level + 1,
+                                                     cluster.right_cluster
+                                                   )
+              current_clusters += children_clusters
+              max_depth = child_max_depth if child_max_depth > max_depth
+            end
+
+            if cluster.left_cluster
+              children_clusters, child_max_depth = build_clusters_up_to_level(
+                                                     max_level,
+                                                     level + 1,
+                                                     cluster.left_cluster
+                                                   )
+              current_clusters += children_clusters
+              max_depth = child_max_depth if child_max_depth > max_depth
+            end
+
+          end
+        else
+          # We are no longer below max_level
+          current_clusters << cluster.all_names
+        end
+
+        [current_clusters, max_depth]
+      end
+
+    end
   end
 end

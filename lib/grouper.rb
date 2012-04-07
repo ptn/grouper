@@ -7,6 +7,10 @@ module Grouper
       @algorithm.data = data
     end
 
+    def cluster_tree
+      @algorithm.cluster_tree
+    end
+
     def clusters
       @algorithm.clusters
     end

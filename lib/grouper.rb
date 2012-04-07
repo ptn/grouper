@@ -2,9 +2,9 @@ require_relative 'grouper/algorithms/clustering/hierarchical_clustering'
 
 module Grouper
   class Grouper
-    def initialize(data, algorithm=ClusteringAlgorithms::HierarchicalClustering.new)
+    def initialize(data=nil,
+                   algorithm=ClusteringAlgorithms::HierarchicalClustering.new(data))
       @algorithm = algorithm
-      @algorithm.data = data
     end
 
     def cluster_tree

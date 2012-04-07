@@ -8,13 +8,11 @@ module Grouper
   module ClusteringAlgorithms
 
     class HierarchicalClustering
-      def initialize(algorithm=DistanceAlgorithms::PearsonCorrelation.new)
-        @data = {}
-        @algorithm = algorithm
-      end
+      attr_reader :data
 
-      def data=(data)
+      def initialize(data, algorithm=DistanceAlgorithms::PearsonCorrelation.new)
         @data = parse_data(data)
+        @algorithm = algorithm
       end
 
       # Builds a binary tree that groups nodes into clusters two at a

@@ -17,16 +17,66 @@ module Grouper
         @data = parse_data(data)
       end
 
-      # TODO Add docs with examples
+      # Builds a binary tree that groups nodes into clusters two at a
+      # time according to their distance.
+      #
+      # Returns a Cluster object that represents the top of the tree.
       def cluster_tree
         @cluster_tree ||= build_cluster_tree
       end
 
-      def clusters(affinity=nil)
+      # Builds a list of lists, each of which contains all of the
+      # clusters that belong to that affinity level.
+      #
+      # Example
+      #
+      #   hierarchical_clustering.clusters
+      #   # =>
+      #   [
+      #     # highest affinity (0)
+      #     [
+      #       ["Movie 3"], ["Movie 2"], ["Movie 5"],
+      #       ["Movie 4"], ["Movie 6"], ["Movie 1"]
+      #     ],
+      #     # affinity 1
+      #     [
+      #       ["Movie 3"], ["Movie 2"],
+      #       ["Movie 4", "Movie 5"],
+      #       ["Movie 1", "Movie 6"]
+      #     ],
+      #     # affinity 2
+      #     [
+      #       ["Movie 2", "Movie 3"],
+      #       ["Movie 1", "Movie 6", "Movie 4", "Movie 5"]
+      #     ],
+      #     # affinity 3 (lowest in this example; the lowest affinity
+      #       always has only one cluster)
+      #     [
+      #       ["Movie 1", "Movie 6", "Movie 4", "Movie 5", "Movie 2", "Movie 3"]
+      #     ]
+      #   ]
+      def clusters
         @clusters ||= build_clusters
-        affinity ? @clusters[affinity] : @clusters
       end
 
+      # Calculates the distance between every two pair of items.
+      #
+      # Returns a Hash whose keys are pairs of items and the
+      # corresponding value is the distance between them.
+      #
+      # Example
+      #
+      #   hierarchical_clustering.distances
+      #   # => {["Movie 1", "Movie 2"]=>1.0,
+      #         ["Movie 1", "Movie 3"]=>1.8571428571428572,
+      #         ["Movie 1", "Movie 4"]=>0.02235922769821508,
+      #         ["Movie 1", "Movie 5"]=>0.019684381936760587,
+      #         ["Movie 1", "Movie 6"]=>0.0,
+      #         ( ... ad nauseum...)
+      #         ["Movie 2", "Movie 6"]=>1.0,
+      #         ["Movie 3", "Movie 4"]=>2.0,
+      #         ["Movie 4", "Movie 5"]=>8.607703910912257e-05,
+      #         ["Movie 5", "Movie 6"]=>0.0}
       def distances
         distances = {}
         clusters = build_initial_clusters
@@ -120,6 +170,8 @@ module Grouper
         Rankings.new(avg)
       end
 
+      # Recurses the cluster tree several times, each time going down
+      # one level less than before, aggregating nodes into clusters.
       def build_clusters
         @clusters = []
         max_level = -1

@@ -19,6 +19,10 @@ module Grouper
       names
     end
 
+    def leaf?
+      !name.nil?
+    end
+
     def to_s(indent=0)
       if name.nil?
         s = "\n"

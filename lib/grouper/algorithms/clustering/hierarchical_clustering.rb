@@ -7,6 +7,8 @@ require_relative '../../cluster'
 module Grouper
   module ClusteringAlgorithms
 
+    WrongInputFormat = Class.new(Exception)
+
     class HierarchicalClustering
       attr_reader :data
 
